@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>wtfs open source video chat</title>
+		<meta name="language" content="en" />
+		<meta name="description" content="an open source video chat/conference solution, no extra plugins or extensions are required" />
+ 		<meta name="keywords" content="wtfs, wtfs chitchat, wtfs.de, video chat, video conference, screensharing, opensource, webrtc, erlang" />
+		<meta name="title" content="wtfs - an open source video chat and conference" />
+		<meta name="author" content="Mr. Pi <mrpi@mr-pi.de>" />
+		<meta name="publisher" content="Mr. Pi" />
+		<meta name="copyright" content="Mr. Pi, 2013" />
+		<meta name="abstract" content="an open source video chat solution" />
+		<meta name="page-topic" content="web service" />
+		<meta name="page-type" content="web service" />
+		<meta name="audience" content="students, managers, supervisors, developer" />
+		<meta name="revisit" content="30 days" />
+		<meta name="revisit-after" content="30 days" />
+		<meta name="robots" content="index, follows" />
+		<link rel="stylesheet" type="text/css" href="/css/main.css" />
+	</head>
+	<body>
+		<header>
+			<h1>wtfs professional chitchat</h1>
+			<span>an open source video chat/conference solution, no extra plugins or extensions are required</span>
+			<button onclick="window.location='/'">← back</button>
+		</header>
+		<section>
+			<article>
+				<h2>Webcam Capture</h2>
+				<canvas id="webcam" height="480" width="640"></canvas>
+			</article>
+		</section>
+		<script src="/js/webrtc_media/camera.js"></script>
+		<script>
+			camera.init({
+				width: 640,
+				height: 480,
+				fps: 25,
+				targetCanvas: document.getElementById('webcam'),
+				onError: function(error) {
+					alert("error: " + error);
+				},
+				onNotSupported: function() {
+					alert("not supported");
+				}
+			});
+		</script>
+	</body>
+</html>
