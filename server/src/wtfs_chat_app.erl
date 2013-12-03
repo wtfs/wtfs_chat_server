@@ -41,7 +41,8 @@ start(_StartType, _StartArgs) ->
 	Dispatch = cowboy_router:compile([
 		{'_', [
 			
-			{"/[...]", cowboy_static, {dir, application:get_env(wtfs_chat,root,"/var/www/")}}
+			{"/", cowboy_static, {file, application:get_env(wtfs_chat,root,"/var/www")++"/index.html"}},
+			{"/[...]", cowboy_static, {dir, application:get_env(wtfs_chat,root,"/var/www")}}
 		]}
 	]),
 	{ok, _} = cowboy:start_http(http, 100, [{port, 60000}], [
