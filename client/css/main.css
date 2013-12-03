@@ -1,0 +1,63 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+body {
+	background: tan;
+}
+#menu {
+	display: -webkit-box;
+	-webkit-box-orient: horizontal;
+	display: -moz-box;
+	-moz-box-orient: horizontal;
+	display: box;
+	box-orient: horizontal;
+}
+body > header {
+	border: 1px solid black;
+	width: 100%;
+	padding: 0.25cm;
+	padding-bottom: 5mm;
+	margin-bottom: 5mm;
+	background: rgba(10,10,10,0.8);
+	box-shadow: 3mm 3mm 3mm rgba(80,120,120,0.55);
+	color: rgba(200,160,0,0.8);
+}
+#menu > article {
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	box-flex: 1;
+	border: 1px solid black;
+	width: 100%;
+	margin: 0.25cm;
+	padding: 0.25cm;
+	padding-bottom: 1cm;
+	background: rgba(10,10,10,0.8);
+	border-bottom-right-radius: 3mm;
+	border-top-left-radius: 3mm;
+	border-bottom-left-radius: 6mm;
+	border-top-right-radius: 6mm;
+	box-shadow: 3mm 3mm 3mm rgba(80,120,120,0.55);
+	color: rgba(200,160,0,0.8);
+}
+#menu > article > h2 {
+	border-bottom: 1px solid black;
+	margin-bottom: 2mm;
+}
+#menu > article > input {
+	display: block;
+	width: 100%;
+	height: 1cm;
+	margin-top: 2.5mm;
+	font-size: 0.75cm;
+	border-radius: 2.5mm;
+}
+#menu > article > button {
+	display: block;
+	width: 100%;
+	height: 1cm;
+	margin-top: 2.5mm;
+	font-size: 0.75cm;
+	border-radius: 2.5mm;
+}

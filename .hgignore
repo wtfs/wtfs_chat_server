@@ -1,0 +1,10 @@
+syntax: regexp
+\/\..*\.swp$
+^\..*\.swp$
+\/erl_crash\.dump$
+^erl_crash\.dump$
+^server\/ebin\/.*
+^server\/deps\/.*
+^server\/doc\/.*
+^server\/log\/.*
+^server\/\.eunit\/.*
