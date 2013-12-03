@@ -1,12 +1,18 @@
+/******************************************************
+ * author: Mr. Pi <mrpi@mr-pi.de>
+ * copyright: 2013 Mr. Pi
+ *-----------------------------------------------------
+ * main stylesheet for open source video chat
+ * ****************************************************/
+
 * {
 	margin: 0px;
 	padding: 0px;
 }
-
 body {
 	background: tan;
 }
-#menu {
+body > section {
 	display: -webkit-box;
 	-webkit-box-orient: horizontal;
 	display: -moz-box;
@@ -14,21 +20,11 @@ body {
 	display: box;
 	box-orient: horizontal;
 }
-body > header {
-	border: 1px solid black;
-	width: 100%;
-	padding: 0.25cm;
-	padding-bottom: 5mm;
-	margin-bottom: 5mm;
-	background: rgba(10,10,10,0.8);
-	box-shadow: 3mm 3mm 3mm rgba(80,120,120,0.55);
-	color: rgba(200,160,0,0.8);
-}
-#menu > article {
+body > section > article {
 	-webkit-box-flex: 1;
 	-moz-box-flex: 1;
 	box-flex: 1;
-	border: 1px solid black;
+	border: thin solid black;
 	width: 100%;
 	margin: 0.25cm;
 	padding: 0.25cm;
@@ -41,9 +37,64 @@ body > header {
 	box-shadow: 3mm 3mm 3mm rgba(80,120,120,0.55);
 	color: rgba(200,160,0,0.8);
 }
-#menu > article > h2 {
-	border-bottom: 1px solid black;
+body > section > article > h2 {
+	border-bottom: thin solid #bbb;
 	margin-bottom: 2mm;
+}
+body > section > article a {
+	color: rgba(120,200,0,0.8);
+	text-decoration: none;
+	font-style: italic;
+	border-bottom: thin solid rgba(30,220,0,0);
+	transition-property: all;
+	transition-duration: 500ms;
+	transition-timing-function: ease-in-out;
+}
+body > section > article a:active,
+body > section > article a:focus,
+body > section > article a:hover {
+	color: rgba(30,220,0,0.8);
+	border-bottom: thin solid rgb(30,220,0);
+}
+body > header {
+	border: thin solid black;
+	padding: 0.25cm;
+	padding-bottom: 5mm;
+	margin-bottom: 5mm;
+	background: rgba(10,10,10,0.8);
+	box-shadow: 3mm 3mm 3mm rgba(80,120,120,0.55);
+	color: rgba(200,160,0,0.8);
+}
+p {
+	margin-bottom: 1em;
+}
+.column_3 {
+	-webkit-column-count: 3;
+	-webkit-column-rule: thin solid rgba(187,187,187,0.7);
+	-webkit-column-gap: 2em;
+	-moz-column-count: 3;
+	-moz-column-rule: thin solid rgba(187,187,187,0.7);
+	-moz-column-gap: 2em;
+	-o-column-count: 3;
+	-o-column-rule: thin solid rgba(187,187,187,0.7);
+	-o-column-gap: 2em;
+	column-count: 3;
+	column-rule: thin solid rgba(187,187,187,0.7);
+	column-gap: 2em;
+}
+.column_2 {
+	-webkit-column-count: 2;
+	-webkit-column-rule: thin solid rgba(187,187,187,0.7);
+	-webkit-column-gap: 2em;
+	-moz-column-count: 2;
+	-moz-column-rule: thin solid rgba(187,187,187,0.7);
+	-moz-column-gap: 2em;
+	-o-column-count: 2;
+	-o-column-rule: thin solid rgba(187,187,187,0.7);
+	-o-column-gap: 2em;
+	column-count: 2;
+	column-rule: thin solid rgba(187,187,187,0.6);
+	column-gap: 2em;
 }
 #menu > article > input {
 	display: block;
@@ -56,8 +107,31 @@ body > header {
 #menu > article > button {
 	display: block;
 	width: 100%;
-	height: 1cm;
 	margin-top: 2.5mm;
 	font-size: 0.75cm;
 	border-radius: 2.5mm;
+
+	color: #050505;
+	padding: 1mm 2mm;
+	background: linear-gradient(
+		top,
+		#ffffff 0%,
+		#c7d95f 50%,
+		#add136 50%,
+		#6d8000);
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#ffffff),
+		color-stop(0.50, #c7d95f),
+		color-stop(0.50, #add136),
+		to(#6d8000));
+	border-radius: 2.5mm;
+	border: 1px solid #6d8000;
+	box-shadow:
+		0px 1mm 1mm rgba(000,000,000,0.5),
+		inset 0px 0px 2mm rgba(255,255,255,1);
+	text-shadow:
+		-0.6mm -0.6mm 0px rgba(000,000,000,0.2),
+		0.6mm 0.6mm 0px rgba(255,255,255,0.4);
 }
+

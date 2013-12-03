@@ -44,7 +44,7 @@ start(_StartType, _StartArgs) ->
 			{"/[...]", cowboy_static, {dir, application:get_env(wtfs_chat,root,"/var/www/")}}
 		]}
 	]),
-	{ok, _} = cowboy:start_http(http, 100, [{port, 40080}], [
+	{ok, _} = cowboy:start_http(http, 100, [{port, 60000}], [
 		{env, [{dispatch, Dispatch}]},
 		{onresponse, fun wtfs_chat_http_error:respond/4}
 	]),
