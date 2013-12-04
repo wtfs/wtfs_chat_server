@@ -39,8 +39,7 @@ start(_StartType, _StartArgs) ->
 	application:ensure_started(cowlib),
 	application:ensure_started(cowboy),
 	Dispatch = cowboy_router:compile([
-		{'_', [
-			
+		{'_', [	
 			{"/", cowboy_static, {file, application:get_env(wtfs_chat,root,"/var/www")++"/index.html"}},
 			{"/[...]", cowboy_static, {dir, application:get_env(wtfs_chat,root,"/var/www")}}
 		]}

@@ -1,0 +1,62 @@
+/******************************************************
+ * author: Mr. Pi <mrpi@mr-pi.de>
+ * copyright: 2013 Mr. Pi
+ *-----------------------------------------------------
+ * stylesheet green button
+ * ****************************************************/
+
+button {
+	margin-top: 2.5mm;
+	font-size: 0.75cm;
+	border-radius: 2.5mm;
+	display: block;
+	color: #050505;
+	padding: 1mm 2mm;
+	background: -moz-linear-gradient(
+		top,
+		#ffffff 0%,
+		#c7d95f 50%,
+		#add136 50%,
+		#6d8000);
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#ffffff),
+		color-stop(0.50, #c7d95f),
+		color-stop(0.50, #add136),
+		to(#6d8000));
+	border-radius: 2.5mm;
+	border: 1px solid #6d8000;
+	box-shadow:
+		2mm 2mm 2mm rgba(000,000,000,0.5),
+		inset 0px 0px 2mm rgba(255,255,255,1);
+	text-shadow:
+		-0.6mm -0.6mm 0px rgba(000,000,000,0.2),
+		0.6mm 0.6mm 0px rgba(255,255,255,0.4);
+}
+button:hover,
+button:focus {
+	box-shadow:
+		2mm 2mm 2mm rgba(000,000,000,0.5),
+		inset 0px 0px 2mm rgba(190,190,190,1);
+}
+button:active {
+	background: -moz-linear-gradient(
+		top,
+		#ffffff 0%,
+		#a7b93f 50%,
+		#8db116 50%,
+		#6d8000);
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#ffffff),
+		color-stop(0.50, #a7b93f),
+		color-stop(0.50, #8db116),
+		to(#6d8000));
+	box-shadow:
+		-2mm -2mm 2mm rgba(000,000,000,0.5),
+		inset 0px 0px 2mm rgba(127,127,127,1);
+	text-shadow:
+		0.6mm 0.6mm 0px rgba(000,000,000,0.2),
+		-0.6mm -0.6mm 0px rgba(255,255,255,0.4);
+}
+
