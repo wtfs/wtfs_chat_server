@@ -48,6 +48,15 @@ start(_StartType, _StartArgs) ->
 		{env, [{dispatch, Dispatch}]},
 		{onresponse, fun wtfs_chat_http_error:respond/4}
 	]),
+	{ok, _} = cowboy:start_https(https, 100, [
+			{port, 60001},
+			{certfile, "/mnt/data/cert/startssl.com/mr-pi.de.pem"}
+
+		], [
+			{env, [{dispatch, Dispatch}]},
+			{onresponse, fun wtfs_chat_http_error:respond/4}
+		]
+	),
 	wtfs_chat_sup:start_link().
 
 %%--------------------------------------------------------------------

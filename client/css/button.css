@@ -37,7 +37,7 @@ button:hover,
 button:focus {
 	box-shadow:
 		2mm 2mm 2mm rgba(000,000,000,0.5),
-		inset 0px 0px 2mm rgba(190,190,190,1);
+		inset 0px 0px 6mm rgba(255,255,255,1);
 }
 button:active {
 	background: -moz-linear-gradient(
