@@ -11,10 +11,10 @@ then
 	unalias vim
 	unalias end
 	
-	for i in "C-c" "a" "C-c" "C-c" "C-c" "C-d" "C-c" "C-c"
+	for i in "C-c" "a" "C-c" "C-c" "C-c" "C-c" "C-d" "C-c" "C-c"
 	do
 		tmux send-keys -t 1 $i
-		sleep 0.25
+		sleep 0.5
 	done
 else
 	MAXWIDTH=`tput cols`
