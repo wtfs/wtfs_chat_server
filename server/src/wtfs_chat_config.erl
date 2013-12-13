@@ -16,7 +16,6 @@
 -include("defaults.hrl").
 
 
-
 %% @doc 
 %% @end
 -spec get(term(), term()) -> term().
@@ -32,6 +31,7 @@ get(Key, Default) ->
 		{ok, Value} -> Value;
 		_ -> Default
 	end.
+
 
 %% @doc get config value
 %% @end
