@@ -13,6 +13,8 @@
 -export([start/2,
 	 stop/1]).
 
+-define(CONF(X), wtfs_chat_config:get(X, fun(K) -> throw({unable_to_get_configuration,K,X}) end)).
+
 %%%===================================================================
 %%% Application callbacks
 %%%===================================================================
@@ -40,23 +42,28 @@ start(_StartType, _StartArgs) ->
 	application:ensure_started(cowboy),
 	Dispatch = cowboy_router:compile([
 		{'_', [	
-			{"/", cowboy_static, {file, application:get_env(wtfs_chat,root,"/var/www")++"/index.html"}},
-			{"/[...]", cowboy_static, {dir, application:get_env(wtfs_chat,root,"/var/www")}}
+			{"/", cowboy_static, {file, ?CONF([static,root])++"/index.html"}},
+			{"/[...]", cowboy_static, {dir, ?CONF([static,root])}}
 		]}
 	]),
-	{ok, _} = cowboy:start_http(http, 100, [{port, 60000}], [
-		{env, [{dispatch, Dispatch}]},
-		{onresponse, fun wtfs_chat_http_error:respond/4}
-	]),
-	{ok, _} = cowboy:start_https(https, 100, [
-			{port, 60001},
-			{certfile, "/mnt/data/cert/startssl.com/mr-pi.de.pem"}
+	case ?CONF([server,http,start]) of true ->
+		lager:info("start http server"),
+		{ok, _} = cowboy:start_http(http, ?CONF([server,http,acceptors]), [{port, ?CONF([server,http,port])}], [
+			{env, [{dispatch, Dispatch}]},
+			{onresponse, fun wtfs_chat_http_error:respond/4}
+		])
+	end,
+	case ?CONF([server,https,start]) of true ->
+		lager:info("start https server"),
+		{ok, _} = cowboy:start_https(https, ?CONF([server,https,acceptors]), [
+			{port, ?CONF([server,https,port])},
+			{certfile, ?CONF([server,https,cert,file])}
 
 		], [
 			{env, [{dispatch, Dispatch}]},
 			{onresponse, fun wtfs_chat_http_error:respond/4}
-		]
-	),
+		])
+	end,
 	wtfs_chat_sup:start_link().
 
 %%--------------------------------------------------------------------
