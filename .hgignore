@@ -3,8 +3,8 @@ syntax: regexp
 ^\..*\.swp$
 \/erl_crash\.dump$
 ^erl_crash\.dump$
-^server\/ebin\/.*
-^server\/deps\/.*
-^server\/doc\/.*
-^server\/log\/.*
-^server\/\.eunit\/.*
+^ebin\/.*
+^deps\/.*
+^doc\/.*
+^log\/.*
+^\.eunit\/.*
