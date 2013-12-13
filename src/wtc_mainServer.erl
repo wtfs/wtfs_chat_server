@@ -5,7 +5,7 @@
 %%%
 %%% @end
 %%%-------------------------------------------------------------------
--module(wtfs_chat_mainServer).
+-module(wtc_mainServer).
 
 -behaviour(gen_server).
 

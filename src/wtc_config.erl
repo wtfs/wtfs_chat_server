@@ -9,7 +9,7 @@
 %%% all options can be overwritten, by set application environment
 %%% @end
 %%%-------------------------------------------------------------------
--module(wtfs_chat_config).
+-module(wtc_config).
 
 -export([get/1,get/2]).
 

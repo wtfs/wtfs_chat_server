@@ -1,4 +1,4 @@
-{application, wtfs_chat,
+{application, wtc,
  [
   {description, ""},
   {vsn, "1"},
@@ -7,6 +7,6 @@
                   kernel,
                   stdlib
                  ]},
-  {mod, { wtfs_chat_app, []}},
+  {mod, { wtc_app, []}},
   {env, []}
  ]}.

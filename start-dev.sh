@@ -1,5 +1,5 @@
 #!/bin/bash
-APPNAME='wtfs_chat'
+APPNAME='wtc'
 rebar compile
 erl -name "${APPNAME}_${RANDOM}@data.mrpi" -pa ebin deps/*/ebin \
 	-eval "application:start(lager)" \

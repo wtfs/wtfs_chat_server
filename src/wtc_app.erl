@@ -5,7 +5,7 @@
 %%%
 %%% @end
 %%%-------------------------------------------------------------------
--module(wtfs_chat_app).
+-module(wtc_app).
 
 -behaviour(application).
 
@@ -13,7 +13,7 @@
 -export([start/2,
 	 stop/1]).
 
--define(CONF(X), wtfs_chat_config:get(X, fun(K) -> throw({unable_to_get_configuration,K,X}) end)).
+-define(CONF(X), wtc_config:get(X, fun(K) -> throw({unable_to_get_configuration,K,X}) end)).
 
 %%%===================================================================
 %%% Application callbacks
@@ -47,24 +47,24 @@ start(_StartType, _StartArgs) ->
 		]}
 	]),
 	case ?CONF([server,http,start]) of true ->
-		lager:info("start http server"),
+		lager:notice("start http server on port ~p", [?CONF([server,http,port])]),
 		{ok, _} = cowboy:start_http(http, ?CONF([server,http,acceptors]), [{port, ?CONF([server,http,port])}], [
 			{env, [{dispatch, Dispatch}]},
-			{onresponse, fun wtfs_chat_http_error:respond/4}
+			{onresponse, fun wtc_http_error:respond/4}
 		])
 	end,
 	case ?CONF([server,https,start]) of true ->
-		lager:info("start https server"),
+		lager:notice("start https server on port ~p", [?CONF([server,https,port])]),
 		{ok, _} = cowboy:start_https(https, ?CONF([server,https,acceptors]), [
 			{port, ?CONF([server,https,port])},
 			{certfile, ?CONF([server,https,cert,file])}
 
 		], [
 			{env, [{dispatch, Dispatch}]},
-			{onresponse, fun wtfs_chat_http_error:respond/4}
+			{onresponse, fun wtc_http_error:respond/4}
 		])
 	end,
-	wtfs_chat_sup:start_link().
+	wtc_sup:start_link().
 
 %%--------------------------------------------------------------------
 %% @private

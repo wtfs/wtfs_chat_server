@@ -5,7 +5,7 @@
 %%%
 %%% @end
 %%%-------------------------------------------------------------------
--module(wtfs_chat_sup).
+-module(wtc_sup).
 
 -behaviour(supervisor).
 
@@ -52,7 +52,7 @@ start_link() ->
 %%--------------------------------------------------------------------
 init([]) ->
 	lager:debug("init: Opts='[]'"),
-	Module = ?CHILD(wtfs_chat_mainServer, wtfs_chat_mainServer, worker, []),
+	Module = ?CHILD(wtc_mainServer, wtc_mainServer, worker, []),
 	{ok, {{one_for_one, 5, 10}, [Module]}}.
 
 %%%===================================================================

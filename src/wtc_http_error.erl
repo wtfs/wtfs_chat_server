@@ -5,7 +5,7 @@
 %%%
 %%% @end
 %%%-------------------------------------------------------------------
--module(wtfs_chat_http_error).
+-module(wtc_http_error).
 
 -export([respond/4]).
 
