@@ -78,7 +78,7 @@ get_conf_from(File, Key) ->
 
 %% @doc extract value from config
 %% @end
--spec extract_key([term()],[term()]) -> {ok, term()} | {error, atom()}.
+-spec extract_key([term()], [term()]) -> {ok, term()} | {error, atom()}.
 extract_key(Data, []) ->
 	case io_lib:printable_list(Data) of
 		true -> {ok, replace_constants(Data)};
