@@ -51,8 +51,8 @@ start(_StartType, _StartArgs) ->
 		{ok, _} = cowboy:start_http(http, ?CONF([server,http,acceptors]), [{port, ?CONF([server,http,port])}], [
 			{env, [{dispatch, Dispatch}]},
 			{onresponse, fun wtc_http_error:respond/4}
-		])
-	end,
+		]);
+	_ -> lager:notice("don't start http server") end,
 	case ?CONF([server,https,start]) of true ->
 		lager:notice("start https server on port ~p", [?CONF([server,https,port])]),
 		{ok, _} = cowboy:start_https(https, ?CONF([server,https,acceptors]), [
@@ -62,8 +62,8 @@ start(_StartType, _StartArgs) ->
 		], [
 			{env, [{dispatch, Dispatch}]},
 			{onresponse, fun wtc_http_error:respond/4}
-		])
-	end,
+		]);
+	_ -> lager:notice("don't start https server") end,
 	wtc_sup:start_link().
 
 %%--------------------------------------------------------------------
