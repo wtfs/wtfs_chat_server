@@ -57,8 +57,8 @@ start(_StartType, _StartArgs) ->
 		lager:notice("start https server on port ~p", [?CONF([server,https,port])]),
 		{ok, _} = cowboy:start_https(https, ?CONF([server,https,acceptors]), [
 			{port, ?CONF([server,https,port])},
+			{cacert, ?CONF([server,https,cert,cacert])},
 			{certfile, ?CONF([server,https,cert,file])}
-
 		], [
 			{env, [{dispatch, Dispatch}]},
 			{onresponse, fun wtc_http_error:respond/4}
