@@ -36,6 +36,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start(_StartType, _StartArgs) ->
+	application:ensure_started(lager),
 	application:ensure_started(httpStatusCodes),
 	application:ensure_started(crypto),
 	application:ensure_started(asn1),

@@ -6,7 +6,9 @@
 		kernel,
 		stdlib,
 		cowboy,
-		ssl
+		ssl,
+		httpStatusCodes,
+		lager
 		]},
 	{mod, { wtc_app, []}},
 	{env, []}
