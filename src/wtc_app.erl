@@ -37,6 +37,10 @@
 %%--------------------------------------------------------------------
 start(_StartType, _StartArgs) ->
 	application:ensure_started(httpStatusCodes),
+	application:ensure_started(crypto),
+	application:ensure_started(asn1),
+	application:ensure_started(public_key),
+	application:ensure_started(ssl),
 	application:ensure_started(ranch),
 	application:ensure_started(cowlib),
 	application:ensure_started(cowboy),
