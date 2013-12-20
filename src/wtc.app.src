@@ -1,12 +1,13 @@
-{application, wtc,
- [
-  {description, ""},
-  {vsn, "1"},
-  {registered, []},
-  {applications, [
-                  kernel,
-                  stdlib
-                 ]},
-  {mod, { wtc_app, []}},
-  {env, []}
- ]}.
+{application, wtc, [
+	{description, ""},
+	{vsn, "1"},
+	{registered, [wtc_sup]},
+	{applications, [
+		kernel,
+		stdlib,
+		cowboy,
+		ssl
+		]},
+	{mod, { wtc_app, []}},
+	{env, []}
+	]}.
