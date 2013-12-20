@@ -36,15 +36,6 @@
 %% @end
 %%--------------------------------------------------------------------
 start(_StartType, _StartArgs) ->
-	ok = application:ensure_started(lager),
-	ok = application:ensure_started(httpStatusCodes),
-	ok = application:ensure_started(crypto),
-	ok = application:ensure_started(asn1),
-	ok = application:ensure_started(public_key),
-	ok = application:ensure_started(ssl),
-	ok = application:ensure_started(ranch),
-	ok = application:ensure_started(cowlib),
-	ok = application:ensure_started(cowboy),
 	Dispatch = cowboy_router:compile([
 		{'_', [	
 			{"/", cowboy_static, {file, ?CONF([static,root])++"/index.html"}},
