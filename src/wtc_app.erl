@@ -61,7 +61,7 @@ start(_StartType, _StartArgs) ->
 		lager:notice("start https server on port ~p", [?CONF([server,https,port])]),
 		{ok, _} = cowboy:start_https(https, ?CONF([server,https,acceptors]), [
 			{port, ?CONF([server,https,port])},
-%			{cacert, ?CONF([server,https,cert,cacert])},
+			{cacert, ?CONF([server,https,cert,cacert])},
 			{certfile, ?CONF([server,https,cert,cert])},
 			{keyfile, ?CONF([server,https,cert,key])}
 		], [
