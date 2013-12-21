@@ -7,4 +7,5 @@ syntax: regexp
 ^deps\/.*
 ^doc\/.*
 ^log\/.*
+^_rel\/.*
 ^\.eunit\/.*

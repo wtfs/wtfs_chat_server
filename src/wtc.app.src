@@ -5,10 +5,10 @@
 	{applications, [
 		kernel,
 		stdlib,
-		cowboy,
-		ssl,
+		lager,
 		httpStatusCodes,
-		lager
+		cowboy,
+		ssl
 		]},
 	{mod, { wtc_app, []}},
 	{env, []}

@@ -24,7 +24,12 @@ get_user_home() ->
 -define(APPLICATION, wtc).
 -define(BASEDIR, get_base_dir()).
 -define(USER_HOME, get_user_home()).
--define(CONFIG_FILES, [?USER_HOME ++ "/.wtfs_chat.conf", "/etc/wtfs_chat.conf", ?BASEDIR ++ "/defaults.conf"]).
+-define(PRIVDIR, case code:priv_dir(?APPLICATION) of {error, _} -> ?BASEDIR++"/priv"; PrivDir -> PrivDir end).
+-define(CONFIG_FILES, [
+	?USER_HOME ++ "/.wtfs_chat.conf",
+	"/etc/wtfs_chat.conf",
+	?PRIVDIR ++ "/defaults.conf"
+	]).
 
 % constants
 -define(CONSTANTS, [{"APPLICATION",atom_to_list(?APPLICATION)},{"BASEDIR",?BASEDIR},{"HOME",?USER_HOME}]).
