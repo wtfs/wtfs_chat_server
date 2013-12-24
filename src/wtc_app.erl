@@ -36,8 +36,8 @@
 %% @end
 %%--------------------------------------------------------------------
 start(_StartType, _StartArgs) ->
-	Dispatch = cowboy_router:compile([
-		{'_', [	
+	Dispatch = cowboy_router:compile(?CONF([static,dispatch]) ++ [
+		{?CONF([static,host]), [	
 			{"/", cowboy_static, {file, ?CONF([static,root])++"/index.html"}},
 			{"/[...]", cowboy_static, {dir, ?CONF([static,root])}}
 		]}
