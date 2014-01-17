@@ -16,7 +16,8 @@
 -include("defaults.hrl").
 
 
-%% @doc 
+%% @doc get configuration value of Key
+%% in case of no result return Default or execute Default(Error), if Default a function
 %% @end
 -spec get(term(), term()) -> term().
 get(Key, Default) when is_function(Default) ->
