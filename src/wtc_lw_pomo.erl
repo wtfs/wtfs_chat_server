@@ -36,7 +36,9 @@
 %%--------------------------------------------------------------------
 start_link() ->
 	lager:debug("start link"),
-	gen_event:start_link({local, ?MODULE}).
+	Res = gen_event:start_link({local, ?MODULE}),
+	gen_event:add_sup_handler(?MODULE, ?MODULE, []),
+	Res.
 
 %%--------------------------------------------------------------------
 %% @doc
