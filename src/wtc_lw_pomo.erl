@@ -21,10 +21,11 @@
 	 terminate/2,
 	 code_change/3]).
 
--record(state, {}).
+-record(pomo, {name="", work=0, break=0, timestamp={0,0,0}}).
+-record(state, {timer, pomos=[]}).
 
 %%%===================================================================
-%%% gen_event callbacks
+%%% gen_event API
 %%%===================================================================
 
 %%--------------------------------------------------------------------
@@ -35,7 +36,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start_link() ->
-	lager:debug("start link"),
+	lager:notice("start link"),
 	Res = gen_event:start_link({local, ?MODULE}),
 	gen_event:add_sup_handler(?MODULE, ?MODULE, []),
 	Res.
@@ -65,8 +66,10 @@ add_handler(Handler, Args) ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
-	lager:debug("init: Opts='[]'"),
-	State = #state{},
+	lager:notice("init: Opts='[]'"),
+	{ok,{interval,Timer}} = timer:send_interval(1000,tick),
+	Pomo = #pomo{name="2/1", work=2*60*1000*1000, break=1*60*1000*1000, timestamp=erlang:now()},
+	State = #state{timer=Timer, pomos=[Pomo]},
 	{ok, State}.
 
 %%--------------------------------------------------------------------
@@ -117,6 +120,9 @@ handle_call(Request, State) ->
 %%                         remove_handler
 %% @end
 %%--------------------------------------------------------------------
+handle_info(tick, State) ->
+	[ Pomo || Pomo <- State#state.pomos ],
+	{ok, State};
 handle_info(Info, State) ->
 	lager:warning("unexpected info: Info='~p', State='~p'", [Info, lager:pr(State,?MODULE)]),
 	{ok, State}.
@@ -151,4 +157,11 @@ code_change(OldVsn, State, Extra) ->
 %%% Internal functions
 %%%===================================================================
 
+
+%% @doc calculate and sends the given pomo to all handler
+%% @end
+-spec calc_pomo(string(), non_neg_integer(), non_neg_integer(), tuple()) -> #pomo{}.
+calc_pomo(Name, Work, Break, LastTimeStamp) ->
+	#pomo{}.
+	
 
