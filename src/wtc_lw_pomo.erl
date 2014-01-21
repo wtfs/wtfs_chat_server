@@ -21,7 +21,7 @@
 	 terminate/2,
 	 code_change/3]).
 
--record(pomo, {name="", work=0, break=0, timestamp={0,0,0}}).
+-record(pomo, {name="", work=0, break=0, timestamp={0,0,0}, current=init}).
 -record(state, {timer, pomos=[]}).
 
 %%%===================================================================
@@ -36,7 +36,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start_link() ->
-	lager:notice("start link"),
+	lager:debug("start link"),
 	Res = gen_event:start_link({local, ?MODULE}),
 	gen_event:add_sup_handler(?MODULE, ?MODULE, []),
 	Res.
@@ -66,9 +66,9 @@ add_handler(Handler, Args) ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
-	lager:notice("init: Opts='[]'"),
+	lager:debug("init: Opts='[]'"),
 	{ok,{interval,Timer}} = timer:send_interval(1000,tick),
-	Pomo = #pomo{name="2/1", work=2*60*1000*1000, break=1*60*1000*1000, timestamp=erlang:now()},
+	Pomo = #pomo{name="2/1", work=10, break=5},
 	State = #state{timer=Timer, pomos=[Pomo]},
 	{ok, State}.
 
@@ -121,8 +121,8 @@ handle_call(Request, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info(tick, State) ->
-	[ Pomo || Pomo <- State#state.pomos ],
-	{ok, State};
+	NewState = State#state{pomos=[ calc_pomo(Pomo) || Pomo <- State#state.pomos ]},
+	{ok, NewState};
 handle_info(Info, State) ->
 	lager:warning("unexpected info: Info='~p', State='~p'", [Info, lager:pr(State,?MODULE)]),
 	{ok, State}.
@@ -160,8 +160,26 @@ code_change(OldVsn, State, Extra) ->
 
 %% @doc calculate and sends the given pomo to all handler
 %% @end
--spec calc_pomo(string(), non_neg_integer(), non_neg_integer(), tuple()) -> #pomo{}.
-calc_pomo(Name, Work, Break, LastTimeStamp) ->
-	#pomo{}.
+-spec calc_pomo(#pomo{}) -> #pomo{}.
+calc_pomo(Pomo) ->
+	case round(timer:now_diff(erlang:now(), Pomo#pomo.timestamp)/1000000) of
+		Diff when Diff =:= Pomo#pomo.work -> %break stats just now
+			io:format("~nbreak start~n"),
+			io:format("<[~p]", [Diff]),
+			Pomo;
+		Diff when Diff < Pomo#pomo.work -> %it's time to work
+			io:format(".[~p]", [Diff]),
+			Pomo;
+		Diff when Diff >= (Pomo#pomo.work+Pomo#pomo.break) -> %a new pomo stats just now
+			io:format("~npomo start~n"),
+			io:format("<[~p]", [Diff]),
+			Pomo#pomo{timestamp=erlang:now()};
+		Diff when Diff > Pomo#pomo.work -> %we are in break
+			io:format(",[~p]", [Diff]),
+			Pomo;
+		Diff ->
+			lager:error("unexpected pomo state, Diff is ~p @ Pomo: ~p", [Diff, Pomo]),
+			Pomo
+	end.
 	
 
