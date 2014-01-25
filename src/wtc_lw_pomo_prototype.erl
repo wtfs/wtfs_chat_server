@@ -24,7 +24,7 @@
 	 terminate/3,
 	 code_change/4]).
 
--record(state, {workTime=0, breakTime=0, startTime={0,0,0}, endTime={0,0,0}}).
+-record(state, {pomo_name, workTime=0, breakTime=0, startTime={0,0,0}, endTime={0,0,0}}).
 
 %%%===================================================================
 %%% API
@@ -42,7 +42,7 @@
 start_link(WorkTime, BreakTime) ->
 	lager:debug("WorkTime='~p', BreakTime='~p'", [WorkTime, BreakTime]),
 	Name = erlang:list_to_atom("wtc_lw_pomo_"++erlang:integer_to_list(WorkTime)++"_"++erlang:integer_to_list(BreakTime)),
-	gen_fsm:start_link({local, Name}, ?MODULE, {WorkTime*60, BreakTime*60}, []).
+	gen_fsm:start_link({local, Name}, ?MODULE, {WorkTime*60, BreakTime*60, Name}, []).
 
 %%%===================================================================
 %%% gen_fsm callbacks
@@ -61,12 +61,12 @@ start_link(WorkTime, BreakTime) ->
 %%                     {stop, StopReason}
 %% @end
 %%--------------------------------------------------------------------
-init({WorkTime, BreakTime}) ->
+init({WorkTime, BreakTime, Name}) ->
 	lager:debug("WorkTime='~p', BreakTime='~p'", [WorkTime, BreakTime]),
 	{ok,{interval,_Timer}} = timer:send_interval(1000,tick),
-	{_, Start} = calendar:universal_time(),
-	End        = calendar:seconds_to_time(WorkTime+calendar:time_to_seconds(Start)),
-	State = #state{workTime=WorkTime, breakTime=BreakTime, startTime=Start, endTime=End},
+	Start = calendar:universal_time(),
+	End   = calendar:gregorian_seconds_to_datetime(WorkTime+calendar:datetime_to_gregorian_seconds(Start)),
+	State = #state{pomo_name=Name, workTime=WorkTime, breakTime=BreakTime, startTime=Start, endTime=End},
 	{ok, work, State}.
 
 %%--------------------------------------------------------------------
@@ -170,8 +170,30 @@ handle_sync_event(Event, From, StateName, State) ->
 %%                   {stop, Reason, NewState}
 %% @end
 %%--------------------------------------------------------------------
-handle_info(tick, StateName, State) ->
-	{next_state, StateName, State};
+handle_info(tick, work, State) ->
+	{Days, {Hours, Minutes, Seconds}} = calendar:time_difference(calendar:universal_time(), State#state.endTime),
+	Percent = calculate_percent(Days, {Hours, Minutes, Seconds}, State#state.workTime),
+	io:format("~p WORK: ~p days and ~p hours, ~p minutes, ~p seconds left (~p% done)~n", [time(), Days, Hours, Minutes, Seconds, Percent]),
+	if
+		Days=<0, Hours=<0, Minutes=<0, Seconds=<0; Days<0 -> %work time has ended
+			{Start, End} = getStartEnd(State#state.breakTime),
+			NewState=State#state{startTime=Start, endTime=End},
+			{next_state, break, NewState};
+		true -> %work time hasn't ended
+			{next_state, work, State}
+	end;
+handle_info(tick, break, State) ->
+	{Days, {Hours, Minutes, Seconds}} = calendar:time_difference(calendar:universal_time(), State#state.endTime),
+	Percent = calculate_percent(Days, {Hours, Minutes, Seconds}, State#state.breakTime),
+	io:format("~p BREAK: ~p days and ~p hours, ~p minutes, ~p seconds left (~p% done)~n", [time(), Days, Hours, Minutes, Seconds, Percent]),
+	if
+		Days=<0, Hours=<0, Minutes=<0, Seconds=<0; Days<0 -> %break time has ended
+			{Start, End} = getStartEnd(State#state.workTime),
+			NewState=State#state{startTime=Start, endTime=End},
+			{next_state, work, NewState};
+		true -> %breakTime time hasn't ended
+			{next_state, break, State}
+	end;
 handle_info(Info, StateName, State) ->
 	lager:warning("unexpected info: Info='~p', StateName='~p', State='~p'", [Info, StateName, lager:pr(State,?MODULE)]),
 	{next_state, StateName, State}.
@@ -209,4 +231,19 @@ code_change(OldVsn, StateName, State, Extra) ->
 %%% Internal functions
 %%%===================================================================
 
+
+%% @doc return a new start and end timestamp
+%% @end
+-spec getStartEnd(calendar:second()) -> {calendar:datetime(), calendar:datetime()}.
+getStartEnd(Duration) ->
+	Start = calendar:universal_time(),
+	End   = calendar:gregorian_seconds_to_datetime(Duration+calendar:datetime_to_gregorian_seconds(Start)),
+	{Start, End}.
+	
+
+%% @doc calculate the elapsed time in percent
+%% @end
+-spec calculate_percent(non_neg_integer(), calendar:time(), calendar:second()) -> float().
+calculate_percent(Days, Time, Duration) ->
+	1-((Days*86400+calendar:time_to_seconds(Time)) / Duration). %a day has 86400 seconds
 
