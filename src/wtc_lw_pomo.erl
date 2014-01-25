@@ -182,4 +182,15 @@ calc_pomo(Pomo) ->
 			Pomo
 	end.
 	
+%% @doc convert erlang now timestamp, pomo/break duration
+%% to a term, includes start time and date, end time and date, process, left duration
+%% @end
+-spec calc_pomo_start_end_process(tuple(), non_neg_integer(), non_neg_integer()) -> tuple().
+calc_pomo_start_end_process(TimeStamp, Duration, Elapsed) ->
+	Start = calendar:now_to_universal_time(TimeStamp),
+	End = calendar:gregorian_seconds_to_datetime(
+		calendar:datetime_to_gregorian_seconds(TimeStamp) +
+		Duration
+	       ),
+	{Start,End}.
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 APPNAME='wtc'
-rebar compile
+rebar update-deps compile
 erl -name "${APPNAME}_${RANDOM}@data.mrpi" -pa ebin deps/*/ebin \
 	-eval "application:start(lager)" \
 	-eval "lager:set_loglevel(lager_console_backend,info)." \

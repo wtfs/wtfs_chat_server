@@ -53,8 +53,11 @@ start_link() ->
 init([]) ->
 	lager:debug("init: Opts='[]'"),
 	Module = ?CHILD(wtc_mainServer, wtc_mainServer, worker, []),
-	LW_POMO = ?CHILD(wtc_lw_pomo, wtc_lw_pomo, worker, []),
-	{ok, {{one_for_one, 5, 10}, [Module, LW_POMO]}}.
+%	LW_POMO = ?CHILD(wtc_lw_pomo, wtc_lw_pomo, worker, []),
+	LW_POMO_25_5  = ?CHILD(wtc_lw_pomo_25_5 , wtc_lw_pomo_prototype, worker, [25,5 ]),
+	LW_POMO_32_8  = ?CHILD(wtc_lw_pomo_32_8 , wtc_lw_pomo_prototype, worker, [32,8 ]),
+	LW_POMO_50_10 = ?CHILD(wtc_lw_pomo_50_10, wtc_lw_pomo_prototype, worker, [50,10]),
+	{ok, {{one_for_one, 5, 10}, [Module, LW_POMO_25_5, LW_POMO_32_8, LW_POMO_50_10]}}.
 
 %%%===================================================================
 %%% Internal functions
