@@ -84,9 +84,11 @@ init({WorkTime, BreakTime}) ->
 %%                   {stop, Reason, NewState}
 %% @end
 %%--------------------------------------------------------------------
-work(_Event, State) ->
+work(Event, State) ->
+	lager:warning("unexpected event @work: Event='~p', State='~p'", [Event, lager:pr(State,?MODULE)]),
 	{next_state, work, State}.
-break(_Event, State) ->
+break(Event, State) ->
+	lager:warning("unexpected event @break: Event='~p', State='~p'", [Event, lager:pr(State,?MODULE)]),
 	{next_state, break, State}.
 
 %%--------------------------------------------------------------------
@@ -107,11 +109,13 @@ break(_Event, State) ->
 %%                   {stop, Reason, Reply, NewState}
 %% @end
 %%--------------------------------------------------------------------
-work(_Event, _From, State) ->
-	Reply = ok,
+work(Event, From, State) ->
+	lager:warning("unexpected sync event @work: Event='~p', From='~p', State='~p'", [Event, From, lager:pr(State,?MODULE)]),
+	Reply = unexpected,
 	{reply, Reply, work, State}.
-break(_Event, _From, State) ->
-	Reply = ok,
+break(Event, From, State) ->
+	lager:warning("unexpected sync event @break: Event='~p', From='~p', State='~p'", [Event, From, lager:pr(State,?MODULE)]),
+	Reply = unexpected,
 	{reply, Reply, break, State}.
 
 %%--------------------------------------------------------------------
@@ -166,6 +170,8 @@ handle_sync_event(Event, From, StateName, State) ->
 %%                   {stop, Reason, NewState}
 %% @end
 %%--------------------------------------------------------------------
+handle_info(tick, StateName, State) ->
+	{next_state, StateName, State};
 handle_info(Info, StateName, State) ->
 	lager:warning("unexpected info: Info='~p', StateName='~p', State='~p'", [Info, StateName, lager:pr(State,?MODULE)]),
 	{next_state, StateName, State}.
