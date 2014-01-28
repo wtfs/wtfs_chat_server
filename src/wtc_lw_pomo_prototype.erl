@@ -24,7 +24,7 @@
 	 terminate/3,
 	 code_change/4]).
 
--record(state, {pomo_name, workTime=0, breakTime=0, startTime={0,0,0}, endTime={0,0,0}}).
+-record(state, {pomoName, workTime=0, breakTime=0, startTime={0,0,0}, endTime={0,0,0}}).
 
 %%%===================================================================
 %%% API
@@ -66,7 +66,7 @@ init({WorkTime, BreakTime, Name}) ->
 	{ok,{interval,_Timer}} = timer:send_interval(1000,tick),
 	Start = calendar:universal_time(),
 	End   = calendar:gregorian_seconds_to_datetime(WorkTime+calendar:datetime_to_gregorian_seconds(Start)),
-	State = #state{pomo_name=Name, workTime=WorkTime, breakTime=BreakTime, startTime=Start, endTime=End},
+	State = #state{pomoName=Name, workTime=WorkTime, breakTime=BreakTime, startTime=Start, endTime=End},
 	{ok, work, State}.
 
 %%--------------------------------------------------------------------
@@ -173,7 +173,7 @@ handle_sync_event(Event, From, StateName, State) ->
 handle_info(tick, work, State) ->
 	{Days, {Hours, Minutes, Seconds}} = calendar:time_difference(calendar:universal_time(), State#state.endTime),
 	Percent = calculate_percent(Days, {Hours, Minutes, Seconds}, State#state.workTime),
-	io:format("~p WORK: ~p days and ~p hours, ~p minutes, ~p seconds left (~p% done)~n", [time(), Days, Hours, Minutes, Seconds, Percent]),
+	wtc_lw_pomo:notify(State#state.pomoName, work, State#state.startTime, State#state.endTime, {Days,{Hours,Minutes,Seconds}}, Percent),
 	if
 		Days=<0, Hours=<0, Minutes=<0, Seconds=<0; Days<0 -> %work time has ended
 			{Start, End} = getStartEnd(State#state.breakTime),
@@ -185,7 +185,7 @@ handle_info(tick, work, State) ->
 handle_info(tick, break, State) ->
 	{Days, {Hours, Minutes, Seconds}} = calendar:time_difference(calendar:universal_time(), State#state.endTime),
 	Percent = calculate_percent(Days, {Hours, Minutes, Seconds}, State#state.breakTime),
-	io:format("~p BREAK: ~p days and ~p hours, ~p minutes, ~p seconds left (~p% done)~n", [time(), Days, Hours, Minutes, Seconds, Percent]),
+	wtc_lw_pomo:notify(State#state.pomoName, break, State#state.startTime, State#state.endTime, {Days,{Hours,Minutes,Seconds}}, Percent),
 	if
 		Days=<0, Hours=<0, Minutes=<0, Seconds=<0; Days<0 -> %break time has ended
 			{Start, End} = getStartEnd(State#state.workTime),

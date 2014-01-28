@@ -11,7 +11,9 @@
 
 %% API
 -export([start_link/0,
-	 add_handler/2]).
+	 add_handler/2,
+	 print/1,
+	 notify/6]).
 
 %% gen_event callbacks
 -export([init/1,
@@ -21,7 +23,25 @@
 	 terminate/2,
 	 code_change/3]).
 
--record(state, {}).
+-record(state, {percentDone=[], show=false}).
+
+%%%===================================================================
+%%% API
+%%%===================================================================
+
+
+%% @doc defines if pomo log prints to console or not
+%% @end
+-spec print(boolean()) -> ok.
+print(Print) ->
+	gen_event:call(?MODULE, ?MODULE, {set, show, Print}).
+
+%% @doc notify all handlers about the new pomo state
+%% @end
+-spec notify(atom(), atom(), calendar:datetime(), calendar:datetime(), {calendar:day(), calendar:time()}, float()) -> ok.
+notify(PomoName, PomoState, StartTime, EndTime, TimeLeft, PercentDone) ->
+	gen_event:notify(?MODULE, {pomoState, PomoName, [{pomoState,PomoState}, {startTime,StartTime}, {endTime,EndTime}, {timeLeft,TimeLeft}, {percentDone,PercentDone}]}),
+	ok.
 
 %%%===================================================================
 %%% gen_event callbacks
@@ -36,7 +56,9 @@
 %%--------------------------------------------------------------------
 start_link() ->
 	lager:debug("start link"),
-	gen_event:start_link({local, ?MODULE}).
+	Result = gen_event:start_link({local, ?MODULE}),
+	gen_event:add_sup_handler(?MODULE, ?MODULE, []),
+	Result.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -80,6 +102,28 @@ init([]) ->
 %%                          remove_handler
 %% @end
 %%--------------------------------------------------------------------
+handle_event({pomoState, _PomoName, _Props}, State) when State#state.show =:= false ->
+	{ok, State};
+handle_event({pomoState, PomoName, Props}, State) when State#state.show =:= true ->
+	PercentDone = round(proplists:get_value(percentDone,Props)*100)/1,
+	NewState = case proplists:get_value(PomoName,State#state.percentDone) of
+		PercentDone ->
+			State;
+		_ ->
+			PomoState = proplists:get_value(pomoState,Props),
+			{_, {SH,SM,SS}} = proplists:get_value(startTime,Props),
+			{_, {LH,LM,LS}} = proplists:get_value(timeLeft,Props),
+			{_, {EH,EM,ES}} = proplists:get_value(endTime,Props),
+			io:fwrite("~-18s ~5s - ~2B:~2B:~2B -> ~2B:~2B:~2B (~5.1f% done) -> ~2B:~2B:~2B~n",
+				  [PomoName, PomoState, SH,SM,SS, LH,LM,LS, PercentDone, EH,EM,ES]),
+			case proplists:is_defined(PomoName, State#state.percentDone) of
+				true ->
+					State#state{percentDone=lists:keyreplace(PomoName, 1, State#state.percentDone, {PomoName,PercentDone})};
+				_ ->
+					State#state{percentDone=[{PomoName,PercentDone}|State#state.percentDone]}
+			end
+	end,
+	{ok, NewState};
 handle_event(Event, State) ->
 	lager:warning("unexpected event: Event='~p', State='~p'", [Event, lager:pr(State,?MODULE)]),
 	{ok, State}.
@@ -97,6 +141,8 @@ handle_event(Event, State) ->
 %%                   {remove_handler, Reply}
 %% @end
 %%--------------------------------------------------------------------
+handle_call({set, show, Show}, State) ->
+	{ok, ok, State#state{show=Show}};
 handle_call(Request, State) ->
 	lager:warning("unexpected call: Request='~p', State='~p'", [Request, lager:pr(State,?MODULE)]),
 	Reply = unexpected,
@@ -149,10 +195,4 @@ code_change(OldVsn, State, Extra) ->
 %%% Internal functions
 %%%===================================================================
 
-
-%% @doc notify all handlers about the new pomo state
-%% @end
--spec notify() -> ok.
-notify() ->
-	ok.
 

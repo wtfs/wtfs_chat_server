@@ -53,10 +53,12 @@ start_link() ->
 init([]) ->
 	lager:debug("init: Opts='[]'"),
 	{ok, {{one_for_one, 5, 10}, [
+		?CHILD(wtc_lw_pomo, wtc_lw_pomo, worker, []),
 		?CHILD(wtc_mainServer, wtc_mainServer, worker, []),
-%		?CHILD(wtc_lw_pomo_25_5 , wtc_lw_pomo_prototype, worker, [25,5 ]),
-%		?CHILD(wtc_lw_pomo_32_8 , wtc_lw_pomo_prototype, worker, [32,8 ]),
-		?CHILD(wtc_lw_pomo_50_10, wtc_lw_pomo_prototype, worker, [2,1])
+		?CHILD(wtc_lw_pomo_2_1  , wtc_lw_pomo_prototype, worker, [ 2, 1]),
+		?CHILD(wtc_lw_pomo_25_5 , wtc_lw_pomo_prototype, worker, [25, 5]),
+		?CHILD(wtc_lw_pomo_32_8 , wtc_lw_pomo_prototype, worker, [32, 8]),
+		?CHILD(wtc_lw_pomo_50_10, wtc_lw_pomo_prototype, worker, [50,10])
 		]}}.
 
 %%%===================================================================
