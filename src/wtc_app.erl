@@ -39,7 +39,7 @@ start(_StartType, _StartArgs) ->
 	Dispatch = cowboy_router:compile(?CONF([static,dispatch]) ++ [
 		{?CONF([static,host]), [	
 			{"/", cowboy_static, {file, ?CONF([static,root])++"/lw.html"}},
-			{"/ws", wtc_ws, []},
+			{"/pomo/:work/:break", wtc_ws, []},
 			{"/[...]", cowboy_static, {dir, ?CONF([static,root])}}
 		]}
 	]),

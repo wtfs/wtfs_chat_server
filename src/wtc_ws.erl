@@ -28,7 +28,7 @@
 	 terminate/2,
 	 code_change/3]).
 
--record(state, {}).
+-record(state, {pid}).
 
 %%%===================================================================
 %%% API
@@ -36,7 +36,7 @@
 
 
 %%%===================================================================
-%%% gen_event callbacks
+%%% cowboy_websocket_handler callbacks
 %%%===================================================================
 
 %% @doc Upgrade the protocol to cowboy_websocket.
@@ -67,7 +67,7 @@ init({_TransportName, _ProtocolName}, _Req, _Opts) ->
 %% upgrading to Websocket.
 %% @end
 websocket_init(_TransportName, Req, _Opts) ->
-	wtc_lw_pomo:add_handler({?MODULE, self()}, [{pomoName, ""}]),
+	wtc_lw_pomo:add_handler({?MODULE, self()}, #state{pid=self()}),
 	State = #state{},
 	{ok, Req, State}.
 
@@ -127,9 +127,8 @@ websocket_terminate(Reason, _Req, State) ->
 %% @spec init(Args) -> {ok, State}
 %% @end
 %%--------------------------------------------------------------------
-init(Args) ->
-	lager:debug("Args: ~p", [Args]),
-	State = #state{},
+init(State) ->
+	lager:debug("State: ~p", [lager:pr(State,?MODULE)]),
 	{ok, State}.
 
 %%--------------------------------------------------------------------

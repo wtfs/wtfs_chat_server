@@ -64,8 +64,7 @@ start_link(WorkTime, BreakTime) ->
 init({WorkTime, BreakTime, Name}) ->
 	lager:debug("WorkTime='~p', BreakTime='~p'", [WorkTime, BreakTime]),
 	{ok,{interval,_Timer}} = timer:send_interval(1000,tick),
-	Start = calendar:universal_time(),
-	End   = calendar:gregorian_seconds_to_datetime(WorkTime+calendar:datetime_to_gregorian_seconds(Start)),
+	{Start, End} = getStartEnd(WorkTime),
 	State = #state{pomoName=Name, workTime=WorkTime, breakTime=BreakTime, startTime=Start, endTime=End},
 	{ok, work, State}.
 
